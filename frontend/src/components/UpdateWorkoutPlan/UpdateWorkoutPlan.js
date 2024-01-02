@@ -20,8 +20,6 @@ export default function UpdateWorkoutPlan() {
       axios
         .get(`http://localhost:8070/workoutPlan/${id}`)
         .then((res) => {
-          console.log(id);
-          console.log(res.data);
           setWorkout(res.data);
           setWorkoutName(res.data.workoutName)
           setWorkoutDescription(res.data.workoutDescription)
@@ -50,13 +48,7 @@ export default function UpdateWorkoutPlan() {
 
   const handleWorkoutPlanChange = (event, dayIndex, index) => {
     const { name, value } = event.target;
-    console.log(value)
-    console.log(name)
-    console.log(dayIndex)
-    console.log(index)
-    console.log(event.target)
     const list = [...workoutPlan];
-    console.log(list[dayIndex][index][name])
     list[dayIndex][index][name] = value;
     setWorkoutPlan(list);
   };
@@ -94,7 +86,8 @@ export default function UpdateWorkoutPlan() {
   };
 
   const updateWorkout = () => {
-    axios
+    if(window.confirm("Are you sure you want to update workout?")){
+      axios
       .put(`http://localhost:8070/workoutPlan/update/${id}`, {
         workoutName,
         workoutDescription,
@@ -107,6 +100,8 @@ export default function UpdateWorkoutPlan() {
       .catch((err) => {
         alert(err.message);
       });
+    }
+    
   };
 
   return (
@@ -134,12 +129,12 @@ export default function UpdateWorkoutPlan() {
                     <input type="text" className="form-control UpdateWorkoutPlan outline" id="workoutDescription" value={workoutDuration} onChange={handleWorkoutDurationChange} />
                   </div>
                   <div className="mb-3 UpdateWorkoutPlan">
-                  <h3 class="card-title UpdateWorkoutPlan">Workout Plan</h3>
+                  <h3 className="card-title UpdateWorkoutPlan">Workout Plan</h3>
                     {workoutPlan.map((day, dayIndex) => (
                       <div key={dayIndex} className="day-container mb-6 UpdateWorkoutPlan">
                         <hr/>
                         <div className="d-flex justify-content-between align-items-center mb-2 UpdateWorkoutPlan">
-                          <h3 class="card-subtitle UpdateWorkoutPlan">Day {dayIndex + 1}</h3>
+                          <h3 className="card-subtitle UpdateWorkoutPlan">Day {dayIndex + 1}</h3>
                           {workoutPlan.length > 1 && (
                             <button type="button" className="btn btn-danger UpdateWorkoutPlan" onClick={() => removeDay(dayIndex)}>
                               Remove Day
@@ -151,7 +146,7 @@ export default function UpdateWorkoutPlan() {
                           {day.map((exercise, exerciseIndex) => (
                             <div key={exerciseIndex} className="exercise mb-2 UpdateWorkoutPlan">
                               <div className="d-flex justify-content-between align-items-center mb-2 UpdateWorkoutPlan">
-                                <h4 class="card-subtitle UpdateWorkoutPlan">Exercise {exerciseIndex + 1}</h4>
+                                <h4 className="card-subtitle UpdateWorkoutPlan">Exercise {exerciseIndex + 1}</h4>
                                 <button type="button" className="btn btn-danger UpdateWorkoutPlan" onClick={() => removeExercise(dayIndex, exerciseIndex)}>
                                   Remove Exercise
                                 </button>

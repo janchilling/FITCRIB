@@ -1,23 +1,15 @@
 import React, { useState, useEffect } from "react";
-// import SongPlayer from "./SongPlayer";
-// import HeartRateMonitor from "./HeartRateMonitor";
 import "./Sessions.css";
 import Stopwatch from "../Stopwatch/Stopwatch";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import format from "date-fns/format";
 
 function WorkoutSession() {
   const [comment, setComment] = useState("");
-  const [workout, setWorkout] = useState(null);
   const { id } = useParams();
   const { dayIndex } = useParams();
   const [workoutName, setWorkoutName] = useState("");
-  const [workoutDescription, setWorkoutDescription] = useState("");
-  const [workoutPlan, setWorkoutPlan] = useState([]);
   const [exercises, setExercises] = useState([]);
-  const [sentimentScore, setSentimentScore] = useState("");
-  const [dateAndTime, setDateAndTime] = useState("");
   const [sessionNumber, setSessionNumber] = useState(null);
 
   const navigate = new useNavigate();
@@ -27,14 +19,8 @@ function WorkoutSession() {
       axios
         .get(`http://localhost:8070/workoutPlan/${id}`)
         .then((res) => {
-          console.log(id);
-          console.log(res.data);
-          setWorkout(res.data);
           setWorkoutName(res.data.workoutName);
-          setWorkoutDescription(res.data.workoutDescription);
-          setWorkoutPlan(res.data.workoutPlan);
           setExercises(res.data.workoutPlan[dayIndex]);
-          console.log(res.data.workoutPlan[dayIndex]);
         })
         .catch((err) => {
           alert(err.message);
@@ -48,8 +34,6 @@ function WorkoutSession() {
       axios
         .get(`http://localhost:8070/workoutSession/${id}/${dayIndex}`)
         .then((res) => {
-          console.log(res.data);
-          console.log(res.data.length);
           if (res.data.length === 0) {
             setSessionNumber(1);
           } else {
@@ -64,9 +48,6 @@ function WorkoutSession() {
   }, [id]);
 
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
-
-  console.log(exercises);
-  console.log(sessionNumber);
 
   const currentExercise = exercises[currentExerciseIndex];
   const prevExercise = exercises[currentExerciseIndex - 1];
@@ -86,20 +67,14 @@ function WorkoutSession() {
 
   const handleCommentChange = (event) => {
     setComment(event.target.value);
-    console.log(comment);
   };
 
   const handleEnd = () => {
-    console.log(comment);
     axios
       .post("http://localhost:5000/predict", {
         logreg_data: { comment },
       })
       .then((response) => {
-        console.log(response.data);
-        setSentimentScore(response.data);
-        console.log(sentimentScore);
-        setDateAndTime(format(new Date(), "dd/MM/yyyy HH:mm:ss"));
         const newSession = {
           workoutId: id,
           workoutName: workoutName,

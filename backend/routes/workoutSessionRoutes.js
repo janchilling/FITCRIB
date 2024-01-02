@@ -1,26 +1,29 @@
 const router = require("express").Router();
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 router.use(bodyParser.json());
-const session = require("../models/workoutSessions.js")
+const session = require("../models/workoutSessions.js");
 
 const {
-    addSession,
-    getSessions,
-    getSessionDay,
-    deleteSession,
-    getSessionDetails
-} = require('../controllers/workoutSessionController')
+  addSession,
+  getSessions,
+  getSessionDay,
+  deleteSession,
+  getSessionDetails,
+} = require("../controllers/workoutSessionController");
 
-router.post("/addSession", addSession)
+// Create a session
+router.post("/addSession", addSession);
 
-router.get('/:id', getSessions)
+// Get a session based on ID
+router.get("/:id", getSessions);
 
-router.get('/:id/:dayIndex', getSessionDay)
+// Get a session based on ID and day
+router.get("/:id/:dayIndex", getSessionDay);
 
-router.delete('/:id/:dayIndex', deleteSession)
+// Delete a session based on ID and day
+router.delete("/:id/:dayIndex", deleteSession);
 
-router.get('/:id/:sessionNumber/:dayIndex', getSessionDetails)
-
-
+// Get session details
+router.get("/:id/:sessionNumber/:dayIndex", getSessionDetails);
 
 module.exports = router;

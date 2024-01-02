@@ -3,14 +3,11 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
-import Slider from "react-slick";
-import './Pie.css';
+import "./Pie.css";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function PieChart() {
-  const [workout, setWorkout] = useState(null);
   const { id } = useParams();
-  const [session, setSession] = useState([]);
   const [totalSessionsPerDay, setTotalSessionsPerDay] = useState();
   const [completedSessions, setCompletedSessions] = useState();
 
@@ -19,11 +16,6 @@ export default function PieChart() {
       axios
         .get(`http://localhost:8070/workoutPlan/${id}`)
         .then((res) => {
-          console.log(id);
-          console.log(res.data);
-          setWorkout(res.data);
-          console.log(res.data.workoutDuration);
-          console.log(res.data.workoutDuration * 4);
           setTotalSessionsPerDay(res.data.workoutDuration * 4);
         })
         .catch((err) => {
@@ -38,9 +30,6 @@ export default function PieChart() {
       axios
         .get(`http://localhost:8070/workoutSession/${id}`)
         .then((res) => {
-          console.log(id);
-          console.log(res.data);
-          setSession(res.data);
           let maxDay = 0;
           for (const [i] of res.data.entries()) {
             if (res.data[i].day > maxDay) {
@@ -55,7 +44,6 @@ export default function PieChart() {
             return arr;
           }
           let dayArray = ascendingArray(maxDay);
-          console.log(dayArray);
 
           const completedSessionsArr = Array(maxDay + 1).fill(0);
           for (const [i] of res.data.entries()) {
@@ -72,9 +60,6 @@ export default function PieChart() {
     fetchSessions();
   }, [id]);
 
-  console.log(session);
-  console.log(completedSessions);
-
   const data = (index) => {
     const chart = {
       labels: ["Completed Sessions", "Incomplete Sessions"],
@@ -83,9 +68,9 @@ export default function PieChart() {
           label: "Sessions",
           data: completedSessions
             ? [
-              completedSessions[index],
-              totalSessionsPerDay - completedSessions[index],
-            ]
+                completedSessions[index],
+                totalSessionsPerDay - completedSessions[index],
+              ]
             : [],
           backgroundColor: [
             "rgba(54, 162, 235, 0.2)",
@@ -105,7 +90,7 @@ export default function PieChart() {
       <div className="piechartdiv">
         <br />
         <h1 className="piechartheading">Progress Details</h1>
-        <br/>
+        <br />
         <div className="piechart">
           <div className="piecontainer">
             <div
@@ -116,35 +101,34 @@ export default function PieChart() {
               <div className="carousel-inner">
                 {completedSessions &&
                   completedSessions.map((item, index) => {
-
                     return (
                       <item>
-                        <div key={index} className={`${"active" === index ? "active" : ""}`} style={{ width: "40%", height: "40%", border: "5px solid #99FF33", backgroundColor: "white" }}>
-                          <p className="piechartpara">Day {index + 1} completed sessions</p>
+                        <div
+                          key={index}
+                          className={`${"active" === index ? "active" : ""}`}
+                          style={{
+                            width: "40%",
+                            height: "40%",
+                            border: "5px solid #99FF33",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <p className="piechartpara">
+                            Day {index + 1} completed sessions
+                          </p>
 
                           <Pie data={data(index)} className="piechartWO" />
-                          
                         </div>
-                        <br/>
+                        <br />
                       </item>
                     );
-
                   })}
               </div>
-              {/* <a className="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev">
-                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span className="visually-hidden">Previous</span>
-              </a>
-              <a className="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next">
-                <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                <span className="visually-hidden">Next</span>
-              </a> */}
             </div>
           </div>
         </div>
         <br />
       </div>
-
     </>
   );
 }

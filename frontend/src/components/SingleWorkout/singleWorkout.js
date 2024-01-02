@@ -9,7 +9,6 @@ import PieChart from "../SessionTrackerPie/PieChart";
 export default function SingleWorkout() {
   const [workout, setWorkout] = useState(null);
   const { id } = useParams();
-  const [dayIndex, setIndex] = useState(null);
   const [session, setSession] = useState([]);
 
   useEffect(() => {
@@ -17,11 +16,7 @@ export default function SingleWorkout() {
       axios
         .get(`http://localhost:8070/workoutPlan/${id}`)
         .then((res) => {
-          console.log(id);
-          console.log(res.data);
           setWorkout(res.data);
-          console.log(res.data.workoutDuration);
-          console.log(res.data.workoutDuration * 4);
         })
         .catch((err) => {
           alert(err.message);
@@ -35,8 +30,6 @@ export default function SingleWorkout() {
       axios
         .get(`http://localhost:8070/workoutSession/${id}`)
         .then((res) => {
-          console.log(id);
-          console.log(res.data);
           setSession(res.data);
         })
         .catch((err) => {
@@ -46,13 +39,9 @@ export default function SingleWorkout() {
     fetchSessions();
   }, [id]);
 
-  console.log(session);
-
   const navigate = new useNavigate();
 
   const handleIndex = (index) => {
-    setIndex(index);
-    console.log(dayIndex);
     let path = `/Session/${id}/${index}`;
     navigate(path);
   };
@@ -69,11 +58,14 @@ export default function SingleWorkout() {
           <div className="SingleWorkout col-md-8 col-lg-8 col-xl-8 overflow-auto mb-5 mt-5 workoutPlanContainer">
             {workout ? (
               <div className="SingleWorkout card shadow SingleWorkout cardoutline w-100">
-                <br/>
+                <br />
                 <div className="SingleWorkout card-body">
-                  
-                  <h1 className="SingleWorkout card-title">{workout.workoutName}</h1>
-                  <p className="SingleWorkout card-text">{workout.workoutDescription}</p>
+                  <h1 className="SingleWorkout card-title">
+                    {workout.workoutName}
+                  </h1>
+                  <p className="SingleWorkout card-text">
+                    {workout.workoutDescription}
+                  </p>
                   <hr />
                   {workout.workoutPlan &&
                     workout.workoutPlan.map((items, index) => {
@@ -105,20 +97,18 @@ export default function SingleWorkout() {
                               );
                             })}
                           </ul>
-                          <hr/>
+                          <hr />
                         </div>
-                        
                       );
                     })}
                   <div className="SingleWorkout d-flex justify-content-center">
                     <UpdateButton id={workout._id} />
                   </div>
-                  <br/>
+                  <br />
                   <div className="SingleWorkout d-flex justify-content-center">
-                  <DeleteButton id={workout._id} />
+                    <DeleteButton id={workout._id} />
                   </div>
-                </div >
-                
+                </div>
               </div>
             ) : (
               <p>Loading...</p>
@@ -129,14 +119,23 @@ export default function SingleWorkout() {
             <div className="SingleWorkout card shadow">
               <div>
                 <h2>Satisfactory Sessions</h2>
-                <br/>
+                <br />
                 {session ? (
                   <ul>
                     {session.map((item, index) => {
                       if (item.sentiment === "4" || item.sentiment === "5") {
-                        
-                        return <li key={index} onClick={() => sessionDetails(item.day, item.sessionNumber)}> Day {item.day + 1} Session {item.sessionNumber} - {item.sessionComment}</li>
-                        
+                        return (
+                          <li
+                            key={index}
+                            onClick={() =>
+                              sessionDetails(item.day, item.sessionNumber)
+                            }
+                          >
+                            {" "}
+                            Day {item.day + 1} Session {item.sessionNumber} -{" "}
+                            {item.sessionComment}
+                          </li>
+                        );
                       }
                       return null;
                     })}
@@ -145,16 +144,30 @@ export default function SingleWorkout() {
                   <p>Loading ......</p>
                 )}
               </div>
-              <br/>
-              
+              <br />
+
               <div>
                 <h2>Unsatisfactory Sessions</h2>
-                <br/>
+                <br />
                 {session ? (
                   <ul>
                     {session.map((item, index) => {
-                      if (item.sentiment === "1" || item.sentiment === "2" || item.sentiment === "3") {
-                        return <li key={index} onClick={() => sessionDetails(item.day, item.sessionNumber)}>Day {item.day + 1} Session {item.sessionNumber} - {item.sessionComment}</li>;
+                      if (
+                        item.sentiment === "1" ||
+                        item.sentiment === "2" ||
+                        item.sentiment === "3"
+                      ) {
+                        return (
+                          <li
+                            key={index}
+                            onClick={() =>
+                              sessionDetails(item.day, item.sessionNumber)
+                            }
+                          >
+                            Day {item.day + 1} Session {item.sessionNumber} -{" "}
+                            {item.sessionComment}
+                          </li>
+                        );
                       }
                       return null;
                     })}

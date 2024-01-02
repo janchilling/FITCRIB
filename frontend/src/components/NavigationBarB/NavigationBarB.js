@@ -12,7 +12,7 @@ export default function NavigationBarB(props) {
     const id = props.id
 
     const { user } = useContext(UserContext);
-    console.log(user)
+ 
 
     //   const MyWorkouts = () => {
     //     let path = `/MyWorkouts`;
